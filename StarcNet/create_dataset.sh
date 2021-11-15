@@ -3,8 +3,8 @@
 
 SIZE=${2:-32}
 
-python src/create_object_slices.py \
+python3 src/create_object_slices.py \
 		   --slice-size $SIZE \
 
-python src/create_db.py \
+python3 src/create_db.py \
                    --slice-size $SIZE \
