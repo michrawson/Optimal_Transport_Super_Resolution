@@ -2,6 +2,8 @@
 # -e .
 
 # external requirements
+numpy
+pillow
 astropy
 scipy
 scikit-image
