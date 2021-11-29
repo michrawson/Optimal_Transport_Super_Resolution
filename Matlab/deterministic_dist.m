@@ -1,7 +1,5 @@
 function targets = deterministic_dist(n,mesh_v)
 
-%     tic
-
     assert(n<=5);
 
     targets = zeros(n, length(mesh_v)^n);
@@ -62,4 +60,4 @@ function targets = deterministic_dist(n,mesh_v)
             end
         end
     end
-%     toc
+    
