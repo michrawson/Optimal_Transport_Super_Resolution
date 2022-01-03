@@ -1,4 +1,4 @@
-function distW = sinkhorn_algo(C, K, source, target)
+function [distW, v] = sinkhorn_algo(C, K, source, target)
 
     n = size(C,1);
     v = ones(n,1);
