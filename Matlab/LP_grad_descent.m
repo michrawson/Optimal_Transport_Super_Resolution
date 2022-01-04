@@ -7,3 +7,7 @@ function [obj_val, target] = LP_grad_descent(max_grad_descent_steps, lambda,...
             break
         end
     end
+
+    if max_grad_descent_steps == 0
+        obj_val = norm(source-target,p) + lambda*entropy1D(target);
+    end

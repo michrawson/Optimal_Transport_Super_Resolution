@@ -5,11 +5,13 @@ function distW = sinkhorn_algo_polo_dist(C, K, epsilon, source, target)
     n = size(C,1);
     u = ones(n,1);
 
-    for opt_ind = 1:500
+    for opt_ind = 1:5000
         
         u_new = source ./ (K*(target ./ (K'*u)));
 
         if not(all(isfinite(u_new)))
+            distW = 9999999;
+            return
             break;
         end
         
@@ -24,4 +26,4 @@ function distW = sinkhorn_algo_polo_dist(C, K, epsilon, source, target)
         
     v = target./(K' * u);                
     T = spdiags(u,0,n,n) * K * spdiags(v,0,n,n);
-    distW = norm(C * T, 'fro');
+    distW = sqrt(sum((C.^2) .* T,'all'));

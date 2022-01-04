@@ -19,14 +19,16 @@ function [target, grad_norm, obj_val] = LP_grad_descent_step(lambda, source, ...
         assert(false);
     end
     
-    dNorm_target = dNorm_target ...
-        - dot(dNorm_target,ones(length(target),1))*dNorm_target;
+%     dNorm_target = dNorm_target ...
+%         - dot(dNorm_target,ones(length(target),1))*dNorm_target;
     
     dEntropy = D_entropy1D(target);
     
-    dEntropy = dEntropy - dot(dEntropy,ones(length(target),1))*dEntropy;
+%     dEntropy = dEntropy - dot(dEntropy,ones(length(target),1))*dEntropy;
     
     grad = dNorm_target + lambda*dEntropy;
+    
+    grad = grad - dot(grad,ones(length(target),1))*grad;
     
     grad_norm = norm(grad,1);
     

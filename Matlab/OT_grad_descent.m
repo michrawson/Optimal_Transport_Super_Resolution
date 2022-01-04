@@ -7,3 +7,10 @@ function [obj_val, target] = OT_grad_descent(max_grad_descent_steps, lambda,...
             break
         end
     end
+
+    if max_grad_descent_steps == 0
+        distW = sinkhorn_algo_polo_dist(C, K, epsilon, source, target);
+%         [distW, ~] = sinkhorn_algo(C, K, source, target);
+        obj_val = distW + lambda*entropy1D(target);
+    end
+    
