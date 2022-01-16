@@ -12,7 +12,6 @@ function distW = sinkhorn_algo_polo_dist(C, K, epsilon, source, target)
         if not(all(isfinite(u_new)))
             distW = 9999999;
             return
-            break;
         end
         
         

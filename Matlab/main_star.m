@@ -4,7 +4,15 @@ close all
 load('star_data.mat', 'predictions', 'images');
 nnet_predictions = predictions'; % 1 is cluster, 2 is noncluster
 
+images = images - min(images,[],'all');
+assert(all(images>=0,'all'));
+
 num_channels = 5;
+max_grad_descent_steps = 4;
+targets_size = 1;%100;
+for L0_thresh = [.5, .9]
+lambda_v = 10.^(-3:0); 
+OT_epsilon_v = 10.^(-3:0);
 
 % sample_inds = randsample(size(images,1), 10, false);
 sample_inds = 1:8;
@@ -22,10 +30,8 @@ nnet_predictions_sample = nnet_predictions(sample_inds,1);
 
 images_sample = images(sample_inds,:,:,:);
 
-lambda_v = 10.^(-3:1);
 lambda_len = length(lambda_v);
 
-OT_epsilon_v = 1;
 OT_epsilon_len = length(OT_epsilon_v);
 
 experiments = {};
@@ -46,7 +52,7 @@ end
 experiments_results = {};
 
 tic
-parfor exper_ind = 1:length(experiments)
+parfor exper_ind = 1:length(experiments) % parfor
     e = experiments{exper_ind};
     data_ind = e(1);
     lambda_ind = e(2);
@@ -58,7 +64,7 @@ parfor exper_ind = 1:length(experiments)
     OT_epsilon = OT_epsilon_v(OT_epsilon_ind);
     
     experiments_results{exper_ind} = OT_start_prediction(star_image, lambda, ...
-                                                                OT_epsilon);
+                OT_epsilon, max_grad_descent_steps, targets_size, L0_thresh);
 
 end
 toc
@@ -80,20 +86,23 @@ end
 OT_prediction_class_channels_class = OT_prediction_class_channels;
 OT_prediction_class_channels_class(OT_prediction_class_channels_class>1)=2;
 
-% OT_prediction_class = max(OT_prediction_class_channels_class,[],4);
+% OT_prediction_class = min(OT_prediction_class_channels_class,[],4);
 OT_prediction_class = round(mean(OT_prediction_class_channels_class,4));
 
 pred_diff = nnet_predictions_sample-OT_prediction_class;
 
-vecnorm(pred_diff,1,1)
+sum(abs(pred_diff),1)
 
-pred_diff_pos = pred_diff;
-pred_diff_pos(pred_diff_pos<0)=0;
-
-vecnorm(pred_diff_pos,1,1)
-
-pred_diff_neg = pred_diff;
-pred_diff_neg(pred_diff_neg>0)=0;
-
-vecnorm(pred_diff_neg,1,1)
+% vecnorm(pred_diff,1,1)
+% 
+% pred_diff_pos = pred_diff;
+% pred_diff_pos(pred_diff_pos<0)=0;
+% 
+% vecnorm(pred_diff_pos,1,1)
+% 
+% pred_diff_neg = pred_diff;
+% pred_diff_neg(pred_diff_neg>0)=0;
+% 
+% vecnorm(pred_diff_neg,1,1)
+end
 

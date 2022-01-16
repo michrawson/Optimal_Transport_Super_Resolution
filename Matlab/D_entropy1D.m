@@ -8,5 +8,4 @@ function e = D_entropy1D(X)
             e(i,1) = -9999999;
         end
     end
-    assert(all(isfinite(e)));
     

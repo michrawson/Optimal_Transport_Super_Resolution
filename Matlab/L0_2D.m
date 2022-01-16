@@ -1,6 +1,6 @@
-function y = L0_2D(x)
+function y = L0_2D(x, L0_thresh)
     x_abs = abs(x);
-    thresh = max(x_abs,[],'all')*0.5;
+    thresh = max(x_abs,[],'all')*L0_thresh;
     y = 0;
     for i = 1:size(x_abs,1)
         for j = 1:size(x_abs,2)

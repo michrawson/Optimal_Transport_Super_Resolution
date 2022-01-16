@@ -1,10 +1,11 @@
 function [target, grad_norm, obj_val] = OT_grad_descent_step(lambda, C, K, ...
     epsilon, source, target)
 
+    assert(all(isfinite(target)));
     [distW, dW_target] = sinkhorn_algo_polo(C, K, epsilon, source, target);
-    
+        
     dEntropy = D_entropy1D(target);
-    
+        
 %     dEntropy = dEntropy - dot(dEntropy,ones(length(target),1))*dEntropy;
     
     grad = dW_target + lambda*dEntropy;
