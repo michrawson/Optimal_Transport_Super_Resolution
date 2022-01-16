@@ -2,7 +2,8 @@ close all
 clear
 
 n = 5;
-
+opt_iters = 5000;
+        
 sig_to_noise = .3; % 1 = high noise, 0 = no noise
 
 C = zeros(n,n);
@@ -82,7 +83,7 @@ for lambda_ind = 1:length(lambda_v)
         target = targets(:,rand_ind);
         
         [obj_val, target_OT] = OT_grad_descent(max_grad_descent_steps, lambda,...
-            C, K, epsilon, source, target);
+            C, K, epsilon, source, target, opt_iters);
         dist_W_v(rand_ind,lambda_ind) = obj_val;
         target_W_v(rand_ind,lambda_ind,:) = target_OT;
 

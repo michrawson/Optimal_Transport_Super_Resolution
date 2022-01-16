@@ -10,6 +10,7 @@ assert(all(images>=0,'all'));
 num_channels = 5;
 max_grad_descent_steps = 4;
 targets_size = 1;%100;
+opt_iters = 5000;
 for L0_thresh = [.5, .9]
 lambda_v = 10.^(-3:0); 
 OT_epsilon_v = 10.^(-3:0);
@@ -64,7 +65,7 @@ parfor exper_ind = 1:length(experiments) % parfor
     OT_epsilon = OT_epsilon_v(OT_epsilon_ind);
     
     experiments_results{exper_ind} = OT_start_prediction(star_image, lambda, ...
-                OT_epsilon, max_grad_descent_steps, targets_size, L0_thresh);
+                OT_epsilon, max_grad_descent_steps, targets_size, L0_thresh, opt_iters);
 
 end
 toc

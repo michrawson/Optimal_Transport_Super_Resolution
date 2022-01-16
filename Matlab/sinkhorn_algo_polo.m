@@ -1,11 +1,11 @@
-function [distW, dW] = sinkhorn_algo_polo(C, K, epsilon, source, target)
+function [distW, dW] = sinkhorn_algo_polo(C, K, epsilon, source, target, opt_iters)
 
     assert(all(isfinite(target)));
 
     n = size(C,1);
     u = ones(n,1);
 
-    for opt_ind = 1:500
+    for opt_ind = 1:opt_iters
         
         u_new = source ./ (K*(target ./ (K'*u)));
 
