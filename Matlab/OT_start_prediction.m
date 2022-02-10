@@ -1,5 +1,5 @@
 function target_W_points = OT_start_prediction(star_image, lambda, OT_epsilon, ...
-    max_grad_descent_steps, targets_size, L0_thresh)
+    max_grad_descent_steps, targets_size, L0_thresh, opt_iters, init_step_size)
 
     assert(all(star_image>=0,'all'));
     assert(sum(abs(star_image),'all')>0);
@@ -21,10 +21,10 @@ function target_W_points = OT_start_prediction(star_image, lambda, OT_epsilon, .
     end
     
     K = exp(-C./OT_epsilon);
-    if(not(all(K>0, 'all')))
-        target_W_points = nan;
-        return
-    end
+%     if(not(all(K>0, 'all')))
+%         target_W_points = nan;
+%         return
+%     end
     
     obj_val_v = zeros(targets_size,1);
     target_v = zeros(targets_size,n);
@@ -40,14 +40,14 @@ function target_W_points = OT_start_prediction(star_image, lambda, OT_epsilon, .
 %         target = reshape(target_2d, image_width*image_height, 1);
 %         target = (target/norm(target,1));
 
-        target = source;% + .1*(2*rand(image_width*image_height,1)-1);
-        
+        target = source;% + 1*(rand(n,1)-.5);
+                
         target(target<0) = 0;
         
         target = target/norm(target,1);
         
         [obj_val, target_OT] = OT_grad_descent(max_grad_descent_steps, lambda,...
-                                            C, K, OT_epsilon, source, target);
+                C, K, OT_epsilon, source, target, opt_iters, init_step_size);
         
         obj_val_v(rand_ind,1) = obj_val;
         target_v(rand_ind,:) = target_OT;
@@ -61,6 +61,8 @@ function target_W_points = OT_start_prediction(star_image, lambda, OT_epsilon, .
     end
     [M,I] = min(obj_val_v);
     optimal_target = target_v(I,:);
-    target_W_points = L0_2D(reshape(optimal_target, image_width, image_height),L0_thresh);
-
+    assert(all(isfinite(optimal_target),'all'));
+    target_W_points = L0_2D(reshape(optimal_target, image_width, image_height),...
+                                                            L0_thresh);
+    assert(all(isfinite(target_W_points),'all'));
 

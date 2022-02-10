@@ -8,16 +8,24 @@ images = images - min(images,[],'all');
 assert(all(images>=0,'all'));
 
 num_channels = 5;
-max_grad_descent_steps = 4;
-targets_size = 1;%100;
-opt_iters = 5000;
-for L0_thresh = [.5, .9]
-lambda_v = 10.^(-3:0); 
-OT_epsilon_v = 10.^(-3:0);
+for max_grad_descent_steps = 2
+max_grad_descent_steps
+for init_step_size = [.001] % .01 %10.^(-4:1)
+% if init_step_size > 10^-3 && max_grad_descent_steps==0
+%     break
+% end
+init_step_size
+
+targets_size = 1
+opt_iters = 500
+for L0_thresh = .75
+L0_thresh
+lambda_v = 1;
+OT_epsilon_v = .001 %10.^(-3:0);
 
 % sample_inds = randsample(size(images,1), 10, false);
-sample_inds = 1:8;
-
+sample_inds = 1:128;
+max(sample_inds)
 % for i = sample_inds
 %     for j = 1:num_channels
 %         figure
@@ -25,7 +33,7 @@ sample_inds = 1:8;
 %     end
 % end
 % 
-% return
+% return 
 
 nnet_predictions_sample = nnet_predictions(sample_inds,1);
 
@@ -65,8 +73,8 @@ parfor exper_ind = 1:length(experiments) % parfor
     OT_epsilon = OT_epsilon_v(OT_epsilon_ind);
     
     experiments_results{exper_ind} = OT_start_prediction(star_image, lambda, ...
-                OT_epsilon, max_grad_descent_steps, targets_size, L0_thresh, opt_iters);
-
+                OT_epsilon, max_grad_descent_steps, targets_size, L0_thresh,...
+                opt_iters, init_step_size);
 end
 toc
 
@@ -84,6 +92,8 @@ for exper_ind = 1:length(experiments)
         = experiments_results{exper_ind};
 end
 
+assert(all(isfinite(OT_prediction_class_channels),'all'));
+
 OT_prediction_class_channels_class = OT_prediction_class_channels;
 OT_prediction_class_channels_class(OT_prediction_class_channels_class>1)=2;
 
@@ -92,7 +102,10 @@ OT_prediction_class = round(mean(OT_prediction_class_channels_class,4));
 
 pred_diff = nnet_predictions_sample-OT_prediction_class;
 
-sum(abs(pred_diff),1)
+sum(nnet_predictions_sample==1 & OT_prediction_class==1,1)
+sum(nnet_predictions_sample==1 & OT_prediction_class==2,1)
+sum(nnet_predictions_sample==2 & OT_prediction_class==1,1)
+sum(nnet_predictions_sample==2 & OT_prediction_class==2,1)
 
 % vecnorm(pred_diff,1,1)
 % 
@@ -107,3 +120,5 @@ sum(abs(pred_diff),1)
 % vecnorm(pred_diff_neg,1,1)
 end
 
+end
+end

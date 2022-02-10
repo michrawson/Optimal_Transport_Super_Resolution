@@ -2,6 +2,12 @@ function [distW, dW] = sinkhorn_algo_polo(C, K, epsilon, source, target, opt_ite
 
     assert(all(isfinite(target)));
 
+    if max(abs(source-target))<10^-7
+        distW=0;
+        dW=0;
+        return
+    end
+    
     n = size(C,1);
     u = ones(n,1);
 
@@ -25,7 +31,7 @@ function [distW, dW] = sinkhorn_algo_polo(C, K, epsilon, source, target, opt_ite
     end
     
     u_pos = u;
-    u_pos(u_pos<10^-7) = 10^-7;
+    u_pos(u_pos<0) = 0;
     
 %     u_ones = u'*ones(n,1);
 %     u_ones(u_ones<10^-7) = 10^-7;
@@ -37,7 +43,6 @@ function [distW, dW] = sinkhorn_algo_polo(C, K, epsilon, source, target, opt_ite
     dW = -epsilon*log(u_pos);% + epsilon*l_u_ones_k*ones(n,1);
     v = target./(K' * u);                
     T = spdiags(u,0,n,n) * K * spdiags(v,0,n,n);
-    distW = sqrt(sum((C.^2) .* T,'all'));
-    
-    assert(all(isfinite(dW)));
+%     distW = sqrt(sum((C.^2) .* T,'all'));
+    distW = sum(C .* T,'all');
     

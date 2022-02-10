@@ -1,5 +1,5 @@
 function [target, grad_norm, obj_val] = OT_grad_descent_step(lambda, C, K, ...
-    epsilon, source, target, opt_iters)
+    epsilon, source, target, opt_iters, init_step_size)
 
     assert(all(isfinite(target)));    
     n = length(target);
@@ -12,10 +12,10 @@ function [target, grad_norm, obj_val] = OT_grad_descent_step(lambda, C, K, ...
     grad(not(isfinite(dEntropy)))=0;
 
     grad(isfinite(dEntropy)) = grad(isfinite(dEntropy)) ...
-                                - sum(grad)/sum(isfinite(dEntropy));
+                                - sum(grad)/sum(isfinite(dEntropy));                  
+                            
+%     assert(abs(dot(grad,ones(n,1)/sqrt(n)))<10^-3)
 
-    assert(abs(dot(grad,ones(n,1)/sqrt(n)))<10^-7)
-    
     grad_norm = norm(grad,1);
     
     obj_val = distW + lambda*entropy1D(target);
@@ -27,7 +27,7 @@ function [target, grad_norm, obj_val] = OT_grad_descent_step(lambda, C, K, ...
 
         obj_val_prev = obj_val;
 
-        step_size = .01;
+        step_size = init_step_size;
         while (obj_val >= obj_val_prev && step_size>10^-12)
             target_new = target - step_size*grad;
 
