@@ -243,7 +243,7 @@ Let the probability distribution $\nu:=\frac{1}{k}\sum_{i=1}^k \delta_{p_i}$ be 
 
     \quad $0 < \epsilon < 1$ : optimal transportation regularization 
 
-    \quad $C\in\R^{n \times n}$ : cost matrix 
+    \quad $C\in\R^{m^2 \times m^2}$ : cost matrix 
 
     \quad $ J_{\lambda,\epsilon}(x,v) := d_W^\epsilon(x,v) + \lambda H(v) $
 
@@ -262,7 +262,7 @@ Let the probability distribution $\nu:=\frac{1}{k}\sum_{i=1}^k \delta_{p_i}$ be 
     	\While{ $v$ has not converged }
  	    {
 $w = \nabla d_W^\epsilon(X_n,\cdot)|_v + \lambda \nabla H|_v $ \\
-$ w = w - \langle w, \bbI \rangle \cdot \bbI $ \\
+$ w = w - \langle w, \frac{1}{m} \bbI \rangle \cdot \frac{1}{m} \bbI $ \\
 $ \alpha = \sup\{\alpha \in \R : J_{\lambda,\epsilon}(v) > J_{\lambda,\epsilon}(v - \alpha w) \}$ \\
             $ \alpha = \min\{0.01, \alpha\}$\\
  	        $ v = v - \alpha w $;
